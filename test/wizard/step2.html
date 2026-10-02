@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Application — Step 2 of 4</title>
+    <link rel="stylesheet" href="wizard.css" />
+  </head>
+  <body>
+    <h1>Senior Backend Engineer — Application</h1>
+    <ol class="steps">
+      <li class="done">1. Your details</li>
+      <li class="now">2. Address &amp; eligibility</li>
+      <li>3. Experience</li>
+      <li>4. Questions &amp; resume</li>
+    </ol>
+
+    <form action="step3.html" method="get">
+      <!-- Workday-style: no visible labels, only automation ids. -->
+      <label for="a1">Street Address *</label>
+      <input type="text" id="a1" data-automation-id="addressSection_addressLine1" name="addr1" />
+
+      <label for="a2">Apartment / Suite</label>
+      <input type="text" id="a2" data-automation-id="addressSection_addressLine2" name="addr2" />
+
+      <label for="city">City *</label>
+      <input type="text" id="city" data-automation-id="addressSection_city" name="city" />
+
+      <label for="st">State / Province *</label>
+      <input type="text" id="st" data-automation-id="addressSection_countryRegion" name="state" />
+
+      <label for="zip">Postal Code *</label>
+      <input type="text" id="zip" data-automation-id="addressSection_postalCode" name="zip" />
+
+      <label for="ctry">Country *</label>
+      <select id="ctry" name="country">
+        <option value="">Select…</option>
+        <option>India</option>
+        <option>Japan</option>
+        <option>Singapore</option>
+        <option>United States</option>
+      </select>
+
+      <label for="dob">Date of Birth</label>
+      <input type="text" id="dob" name="dob" placeholder="DD/MM/YYYY" />
+
+      <fieldset>
+        <legend>Are you legally authorized to work in the country of this role?</legend>
+        <label><input type="radio" name="auth" value="Yes" /> Yes</label>
+        <label><input type="radio" name="auth" value="No" /> No</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Will you now or in the future require sponsorship for an employment visa?</legend>
+        <label><input type="radio" name="spon" value="Yes" /> Yes</label>
+        <label><input type="radio" name="spon" value="No" /> No</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Are you willing to relocate for this position?</legend>
+        <label><input type="radio" name="relo" value="yes" /> Yes</label>
+        <label><input type="radio" name="relo" value="no" /> No</label>
+        <label><input type="radio" name="relo" value="maybe" /> Not sure yet</label>
+      </fieldset>
+
+      <div class="actions">
+        <button type="button" onclick="history.back()">Back</button>
+        <button type="submit" class="primary">Save and Continue</button>
+      </div>
+    </form>
+    <p class="note">
+      Step 2 of 4. Has a Back button the driver must not click, and a relocation group where "No" must not land on
+      "Not sure yet".
+    </p>
+  </body>
+</html>
