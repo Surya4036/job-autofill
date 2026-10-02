@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Apply Autofill</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --fg: #18181b;
+        --muted: #71717a;
+        --line: #e4e4e7;
+        --bg: #ffffff;
+        --accent: #2563eb;
+        --ok: #15803d;
+        --warn: #b45309;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #f4f4f5;
+          --muted: #a1a1aa;
+          --line: #3f3f46;
+          --bg: #18181b;
+          --accent: #60a5fa;
+          --ok: #4ade80;
+          --warn: #fbbf24;
+        }
+      }
+      body {
+        width: 380px;
+        margin: 0;
+        padding: 14px;
+        font: 13px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        color: var(--fg);
+        background: var(--bg);
+      }
+      h1 {
+        font-size: 14px;
+        margin: 0 0 10px;
+      }
+      .row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+      button {
+        flex: 1;
+        padding: 7px 10px;
+        font: inherit;
+        font-weight: 500;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        background: transparent;
+        color: var(--fg);
+        cursor: pointer;
+      }
+      button.primary {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
+      label.opt {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+      .opts {
+        display: flex;
+        gap: 14px;
+        margin-bottom: 10px;
+      }
+      #status {
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      section {
+        border-top: 1px solid var(--line);
+        padding-top: 8px;
+        margin-top: 8px;
+      }
+      section h2 {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--muted);
+        margin: 0 0 6px;
+      }
+      ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        max-height: 190px;
+        overflow-y: auto;
+      }
+      li {
+        padding: 3px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      li:last-child {
+        border-bottom: 0;
+      }
+      .q {
+        font-weight: 500;
+      }
+      .v {
+        color: var(--muted);
+        word-break: break-word;
+      }
+      .ok .q {
+        color: var(--ok);
+      }
+      .warn .q {
+        color: var(--warn);
+      }
+      footer {
+        margin-top: 12px;
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 11px;
+      }
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Apply Autofill</h1>
+    <div class="opts">
+      <label class="opt"><input type="checkbox" id="overwrite" /> Overwrite filled fields</label>
+      <label class="opt"><input type="checkbox" id="useSnippets" /> Use saved answers</label>
+    </div>
+    <div class="row">
+      <button id="preview">Preview</button>
+      <button id="fill" class="primary">Fill this page</button>
+    </div>
+    <div id="status">Open an application form, then Preview to see what would be filled.</div>
+    <div id="results"></div>
+    <footer>
+      <a href="#" id="openOptions">Edit profile &amp; answers</a>
+      <span>Data stays on this machine</span>
+    </footer>
+    <script src="store.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
