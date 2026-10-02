@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Apply Autofill",
+  "version": "0.1.0",
+  "description": "Fill job application forms from a saved profile and a library of reusable answers. All data stays local.",
+  "permissions": ["storage", "activeTab"],
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_title": "Apply Autofill"
+  },
+  "options_page": "src/options.html",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*", "file:///*"],
+      "all_frames": true,
+      "js": ["src/store.js", "src/matcher.js", "src/filler.js", "src/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
