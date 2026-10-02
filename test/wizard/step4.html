@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Application — Step 4 of 4</title>
+    <link rel="stylesheet" href="wizard.css" />
+  </head>
+  <body>
+    <h1>Senior Backend Engineer — Application</h1>
+    <ol class="steps">
+      <li class="done">1. Your details</li>
+      <li class="done">2. Address &amp; eligibility</li>
+      <li class="done">3. Experience</li>
+      <li class="now">4. Questions &amp; resume</li>
+    </ol>
+
+    <form action="submitted.html" method="get" id="finalForm">
+      <label for="q1">Why do you want to work at Acme?</label>
+      <textarea id="q1" name="q1"></textarea>
+
+      <label for="q2">Describe the most challenging project you have worked on.</label>
+      <textarea id="q2" name="q2"></textarea>
+
+      <label for="q3">What are your salary expectations?</label>
+      <textarea id="q3" name="q3"></textarea>
+
+      <label for="q4">How did you hear about this opening?</label>
+      <input type="text" id="q4" name="q4" />
+
+      <label for="q5">Which of our product principles do you disagree with, and why?</label>
+      <textarea id="q5" name="q5"></textarea>
+
+      <label for="cv">Resume / CV *</label>
+      <input type="file" id="cv" name="resume" accept=".pdf,.doc,.docx" />
+
+      <label for="cl">Cover Letter (optional)</label>
+      <input type="file" id="cl" name="cover_letter" />
+
+      <fieldset>
+        <legend>I certify that the information provided is accurate.</legend>
+        <label><input type="checkbox" id="cert" name="certify" /> I agree</label>
+      </fieldset>
+
+      <div class="actions">
+        <button type="button" onclick="history.back()">Back</button>
+        <button type="submit" class="danger">Submit Application</button>
+      </div>
+    </form>
+    <p class="note">
+      Final step. The driver must fill and attach, then <strong>stop</strong> — Submit Application should never be
+      clicked. Question 5 has no saved answer and must stay empty.
+    </p>
+  </body>
+</html>
