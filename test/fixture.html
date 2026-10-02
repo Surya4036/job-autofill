@@ -126,7 +126,8 @@
       <option>90 days</option>
     </select>
     <p class="note">
-      The notice select should be reported as needing attention: the profile says "2 months" and no option says that.
+      No option says "2 months", so this exercises duration matching: the profile value is converted to days and should
+      land on "60 days".
     </p>
 
     <h2>Pre-filled field — should be left alone unless Overwrite is on</h2>
@@ -148,9 +149,23 @@
     <label for="short">Why this company? (max 60 characters)</label>
     <input type="text" id="short" name="short" maxlength="60" />
 
-    <h2>File upload — extension cannot touch this</h2>
+    <h2>File uploads</h2>
     <label for="cv">Resume / CV</label>
-    <input type="file" id="cv" name="resume" />
+    <input type="file" id="cv" name="resume" accept=".pdf,.doc,.docx" />
+    <p class="note">Should attach your saved resume.</p>
+
+    <label for="cl">Cover Letter</label>
+    <input type="file" id="cl" name="cover_letter" />
+    <p class="note">Asks for a different document, so it should report as manual rather than attaching your resume.</p>
+
+    <label for="photo">Passport Photo (JPG only)</label>
+    <input type="file" id="photo" name="photo" accept="image/jpeg" />
+    <p class="note">Should report that it only accepts images.</p>
+
+    <label for="hiddencv">Resume via a hidden input behind a styled button</label>
+    <button type="button" onclick="document.getElementById('hiddencv').click()">Upload resume</button>
+    <input type="file" id="hiddencv" name="resume_hidden" style="display: none" />
+    <p class="note">Hidden inputs are still filled — ATS forms hide the real input constantly.</p>
 
     <h2>Fields that must be ignored entirely</h2>
     <label for="s">Search jobs</label><input type="text" id="s" name="q" />
