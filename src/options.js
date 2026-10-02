@@ -7,7 +7,17 @@ const el = (tag, props = {}, children = []) => {
   return node;
 };
 
-let state = null;
+let state = null; // profile / snippets / settings
+let resumeFile = null; // { name, type, size, dataUrl } — saved separately, never in the JSON export
+
+const prettySize = (bytes) => (bytes < 1024 * 1024 ? `${Math.round(bytes / 1024)} KB` : `${(bytes / 1048576).toFixed(1)} MB`);
+
+function renderResume() {
+  $('resumeState').textContent = resumeFile
+    ? `Saved: ${resumeFile.name} (${prettySize(resumeFile.size)})`
+    : 'No resume saved.';
+  $('removeResume').hidden = !resumeFile;
+}
 
 function renderProfile() {
   const host = $('profile');
@@ -128,6 +138,40 @@ $('addSnippet').addEventListener('click', () => {
   renderSnippets();
 });
 
+$('pickResume').addEventListener('click', () => $('resumeFile').click());
+
+$('resumeFile').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if (!file) return;
+  if (file.size > JA.MAX_RESUME_BYTES) {
+    flash(`That file is ${prettySize(file.size)}. Keep it under ${prettySize(JA.MAX_RESUME_BYTES)}.`);
+    return;
+  }
+  const dataUrl = await new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  }).catch((err) => {
+    flash(`Could not read that file: ${err.message}`);
+    return null;
+  });
+  if (!dataUrl) return;
+
+  resumeFile = { name: file.name, type: file.type, size: file.size, dataUrl };
+  await JA.save({ resumeFile });
+  renderResume();
+  flash('Resume saved.');
+});
+
+$('removeResume').addEventListener('click', async () => {
+  await chrome.storage.local.remove('resumeFile');
+  resumeFile = null;
+  renderResume();
+  flash('Resume removed.');
+});
+
 $('export').addEventListener('click', () => {
   collect();
   const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
@@ -174,8 +218,12 @@ $('reset').addEventListener('click', async () => {
 });
 
 (async function init() {
-  state = await JA.load();
+  const loaded = await JA.load();
+  resumeFile = loaded.resumeFile;
+  // Kept out of `state` so Save and Export never touch the binary.
+  state = { profile: loaded.profile, snippets: loaded.snippets, settings: loaded.settings };
   renderProfile();
   renderSnippets();
   renderSettings();
+  renderResume();
 })();
