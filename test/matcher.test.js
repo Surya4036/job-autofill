@@ -197,5 +197,104 @@ expectDate('YYYY-MM-DD', 'text', '1997/08/15');
 expectDate('', 'text', '08/15/1997'); // US-hosted ATS default
 expectDate('', 'date', '1997-08-15'); // native date inputs want ISO
 
+console.log('\nDuration-aware select matching');
+/** A stand-in <select>; fillSelect only needs options, value and the event hooks. */
+function select(optionTexts) {
+  return {
+    options: optionTexts.map((t) => ({ textContent: t, value: t })),
+    value: '',
+    focus() {},
+    blur() {},
+    dispatchEvent() {},
+  };
+}
+function expectOption(desc, optionTexts, want, expected) {
+  const el = select(optionTexts);
+  const ok = JA.fillSelect(el, want);
+  const got = ok ? el.value : null;
+  if (got !== expected) {
+    failures++;
+    console.log(`  FAIL  ${desc}\n        want ${expected}, got ${got}`);
+  } else {
+    console.log(`  ok    ${desc} → ${got === null ? 'no match (reported)' : got}`);
+  }
+}
+const NOTICE = ['Immediate', '30 days', '60 days', '90 days'];
+expectOption('"2 months" into a days-only dropdown', NOTICE, '2 months', '60 days');
+expectOption('"1 month" into a days-only dropdown', NOTICE, '1 month', '30 days');
+expectOption('"45 days" rounds up, never down', NOTICE, '45 days', '60 days');
+expectOption('"6 months" when nothing is long enough', NOTICE, '6 months', '90 days');
+expectOption('"Immediate" matches on wording first', NOTICE, 'Immediate', 'Immediate');
+expectOption('exact wording still wins', ['1 month', '2 months', '3 months'], '2 months', '2 months');
+// The fallback must not hijack non-duration selects.
+expectOption('country select is unaffected', ['India', 'Japan', 'United States'], 'India', 'India');
+expectOption('non-duration value in a duration select still reports', NOTICE, 'Negotiable', null);
+expectOption('Yes/No stays strict', ['Yes', 'No', 'Not specified'], 'No', 'No');
+
+console.log('\nDuration parsing');
+for (const [input, want] of [
+  ['2 months', 60],
+  ['60 days', 60],
+  ['8 weeks', 56],
+  ['Immediate', 0],
+  ['1 year', 365],
+  ['Negotiable', null],
+  ['', null],
+]) {
+  const got = JA.parseDuration(input);
+  if (got !== want) {
+    failures++;
+    console.log(`  FAIL  parseDuration("${input}") want ${want}, got ${got}`);
+  } else {
+    console.log(`  ok    parseDuration("${input}") → ${got}`);
+  }
+}
+
+console.log('\nFile input accept filtering');
+function expectAccept(accept, want) {
+  const el = { getAttribute: (k) => (k === 'accept' ? accept : null) };
+  const got = JA.acceptsFile(el, 'Surya Prakash SDE Resume.pdf', 'application/pdf');
+  if (got !== want) {
+    failures++;
+    console.log(`  FAIL  accept="${accept}" want ${want}, got ${got}`);
+  } else {
+    console.log(`  ok    accept="${accept}" → ${got}`);
+  }
+}
+expectAccept('', true); // no restriction
+expectAccept('.pdf,.doc,.docx', true);
+expectAccept('.doc,.docx', false); // PDF not allowed — must report, not attach
+expectAccept('application/pdf', true);
+expectAccept('application/pdf,application/msword', true);
+expectAccept('image/*', false);
+expectAccept('*/*', true);
+expectAccept('.PDF', true); // case-insensitive
+
+console.log('\nContent scripts share one global scope: no duplicate top-level const/let');
+// A top-level `const X` in two content scripts throws "Identifier 'X' has already been
+// declared", which silently kills every file after the first — the listener never
+// registers and the popup just reports "no form fields found".
+{
+  const manifest = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'manifest.json'), 'utf8'));
+  const files = manifest.content_scripts[0].js;
+  const owners = new Map();
+  for (const rel of files) {
+    const src = fs.readFileSync(path.join(__dirname, '..', rel), 'utf8');
+    for (const m of src.matchAll(/^(?:const|let)\s+([A-Za-z_$][\w$]*)/gm)) {
+      if (!owners.has(m[1])) owners.set(m[1], []);
+      owners.get(m[1]).push(rel);
+    }
+  }
+  const clashes = [...owners].filter(([, where]) => where.length > 1);
+  if (clashes.length) {
+    failures++;
+    for (const [ident, where] of clashes) {
+      console.log(`  FAIL  "${ident}" declared with const/let in ${where.join(' and ')} — use var or an IIFE`);
+    }
+  } else {
+    console.log(`  ok    ${owners.size} top-level binding(s) across ${files.length} files, no collisions`);
+  }
+}
+
 console.log(failures === 0 ? '\nAll matcher assertions passed.\n' : `\n${failures} assertion(s) failed.\n`);
 process.exit(failures === 0 ? 0 : 1);
