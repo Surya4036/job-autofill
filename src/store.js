@@ -1,7 +1,7 @@
 /* Profile + snippet storage. Shared by content script, popup and options page.
    Everything lives in chrome.storage.local — no network calls anywhere in this extension. */
 
-const JA = (self.JA = self.JA || {});
+var JA = (self.JA = self.JA || {}); // var, not const: content scripts share one global scope
 
 // Field groups drive both the options UI and the autofill matcher.
 JA.SCHEMA = [
@@ -97,11 +97,11 @@ JA.fieldMeta = (key) => {
 // Edit anything on the options page.
 JA.DEFAULT_PROFILE = {
   firstName: 'Surya',
-  middleName: '',
-  lastName: 'Prakash',
-  fullName: 'Surya Prakash',
+  middleName: 'Prakash',
+  lastName: 'Gedela',
+  fullName: 'Surya Prakash Gedela',
   preferredName: 'Surya',
-  dob: '',
+  dob: '1999-08-08',
   gender: '',
   pronouns: '',
   nationality: 'Indian',
@@ -110,15 +110,15 @@ JA.DEFAULT_PROFILE = {
   phone: '+91 7013111057',
   phoneCountryCode: '+91',
   phoneNational: '7013111057',
-  addressLine1: '',
-  addressLine2: '',
+  addressLine1: 'Plot no 126, Padmavati Nilayam',
+  addressLine2: 'Kondapur Village',
   city: 'Hyderabad',
   state: 'Telangana',
-  postalCode: '',
+  postalCode: '500084',
   country: 'India',
 
-  linkedin: '',
-  github: '',
+  linkedin: 'https://www.linkedin.com/in/surya4036',
+  github: 'https://github.com/surya4036',
   portfolio: '',
   twitter: '',
 
@@ -126,15 +126,15 @@ JA.DEFAULT_PROFILE = {
   currentTitle: 'Software Engineer',
   yearsExperience: '5',
   currentSalary: '',
-  expectedSalary: '',
+  expectedSalary: '20 LPA',
   noticePeriod: '2 months',
-  earliestStartDate: '',
+  earliestStartDate: '2026-12-01',
 
-  degree: '',
-  fieldOfStudy: '',
-  university: '',
-  gradYear: '',
-  gpa: '',
+  degree: 'Bachelor of Technology',
+  fieldOfStudy: 'Electrical and Electronics Engineering',
+  university: 'Anil Neerukonda Institute of Technology and Sciences',
+  gradYear: '2021',
+  gpa: '8.9',
 
   authorizedToWork: 'Yes',
   needsSponsorship: 'Yes',
@@ -250,12 +250,18 @@ JA.DEFAULT_SETTINGS = {
   snippetThreshold: 2.0,
 };
 
+// chrome.storage.local allows ~10MB total; a resume PDF is normally well under 200KB,
+// but refuse anything large enough to threaten the rest of the profile.
+JA.MAX_RESUME_BYTES = 4 * 1024 * 1024;
+
 JA.load = async function load() {
-  const raw = await chrome.storage.local.get(['profile', 'snippets', 'settings']);
+  const raw = await chrome.storage.local.get(['profile', 'snippets', 'settings', 'resumeFile']);
   return {
     profile: { ...JA.DEFAULT_PROFILE, ...(raw.profile || {}) },
     snippets: raw.snippets || JA.DEFAULT_SNIPPETS,
     settings: { ...JA.DEFAULT_SETTINGS, ...(raw.settings || {}) },
+    // { name, type, size, dataUrl } or null
+    resumeFile: raw.resumeFile || null,
   };
 };
 
