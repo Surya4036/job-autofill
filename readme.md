@@ -30,7 +30,7 @@ On an application form:
 The popup then groups everything into:
 
 - **Filled** — what went in, and where it came from
-- **Needs your attention** — file uploads, dropdowns where no option matched, profile
+- **Needs your attention** — uploads it wouldn't guess at, dropdowns where no option matched, profile
   fields that are still empty
 - **Left alone** — fields that already had values (turn on *Overwrite filled fields* to
   replace them)
@@ -58,10 +58,23 @@ followed by `input` and `change` events so the framework accepts them. Selects a
 groups are matched by option text, and `Yes`/`No` answers match strictly so `No` never
 lands on "Not specified".
 
+**Resume upload** — save the file once under **Resume file** on the options page and it's
+attached to resume fields automatically. A content script can build a `DataTransfer` and
+assign to `input.files`, which is the same mechanism Playwright and Cypress use. Hidden
+inputs are handled too, since ATS forms habitually hide the real input behind a styled
+button. Three cases are deliberately *not* attached and get reported instead: fields asking
+for a different document (cover letter, transcript, photo), fields whose `accept` attribute
+excludes your file type, and sites with custom uploaders that reject a programmatic
+attachment.
+
+Durations are matched numerically when wording fails, so a profile saying `2 months` picks
+`60 days` out of a dropdown that only offers days. Where there's no exact equivalent it
+rounds *up* — never tell an employer you can start sooner than your notice period actually
+allows. This only engages when both the value and the options parse as durations, so
+country and Yes/No selects are untouched.
+
 ## What it deliberately won't do
 
-- **File uploads.** Browsers don't let extensions attach files, and that's correct. Resume
-  and cover-letter uploads are reported as needing you.
 - **Submit.** It never clicks a submit button.
 - **Logins, passwords, search boxes, CAPTCHAs.** Skipped on sight.
 - **Workday's custom dropdowns.** Workday renders many "selects" as button-and-listbox
@@ -83,6 +96,20 @@ card in `chrome://extensions` — otherwise Chrome won't inject the content scri
 unlabelled inputs, radio groups, a `DD/MM/YYYY` text date, a select whose options don't
 match your profile wording, a file input, and a question with no saved answer. Run
 **Preview** against it after changing any matching rule.
+
+## What not to share
+
+Everything personal lives in one gitignored folder, `local/`:
+
+| File | Why it stays local |
+|---|---|
+| `local/profile.json` | Date of birth, phone, home address. Also the file to **Import JSON** on the options page. |
+| `local/urls.txt` | Which jobs you're applying to |
+| `local/runs/` | Screenshots of partly filled forms, so also your details |
+
+One folder to skip. `git` honours `.gitignore` automatically — but GitHub's **web upload
+ignores `.gitignore` entirely**, so if you upload through the browser, leave `local/` and
+`driver/.venv/` out by hand.
 
 ## Layout
 
