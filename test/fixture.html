@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Fixture — fake ATS application form</title>
+    <style>
+      body {
+        font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        max-width: 680px;
+        margin: 40px auto;
+        padding: 0 20px 80px;
+        color: #18181b;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      h2 {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #71717a;
+        margin-top: 32px;
+      }
+      label {
+        display: block;
+        margin: 14px 0 4px;
+        font-weight: 500;
+      }
+      input[type="text"],
+      input[type="email"],
+      input[type="tel"],
+      input[type="date"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 7px 9px;
+        border: 1px solid #d4d4d8;
+        border-radius: 6px;
+        font: inherit;
+      }
+      textarea {
+        min-height: 90px;
+      }
+      fieldset {
+        border: 1px solid #e4e4e7;
+        border-radius: 8px;
+        margin: 16px 0;
+      }
+      fieldset label {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 400;
+        margin-right: 16px;
+      }
+      .note {
+        color: #a1a1aa;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Fake ATS application form</h1>
+    <p class="note">
+      A local fixture for testing the extension. Nothing submits anywhere. Each section targets a case that commonly
+      breaks autofill.
+    </p>
+
+    <h2>Standard labelled fields</h2>
+    <label for="fn">First Name *</label><input type="text" id="fn" name="first_name" />
+    <label for="ln">Last Name *</label><input type="text" id="ln" name="last_name" />
+    <label for="em">Email *</label><input type="email" id="em" name="email" />
+    <label for="ph">Phone</label><input type="tel" id="ph" name="phone" />
+    <label for="li">LinkedIn Profile</label><input type="text" id="li" name="answer_1" />
+    <label for="gh">GitHub</label><input type="text" id="gh" name="answer_2" />
+
+    <h2>Fields with no &lt;label&gt; — placeholder and aria-label only</h2>
+    <input type="text" placeholder="Street address" name="addr" />
+    <input type="text" aria-label="City" name="c" style="margin-top: 8px" />
+    <input type="text" placeholder="ZIP / Postal Code" name="z" style="margin-top: 8px" />
+
+    <h2>Workday-style automation ids, no visible label text</h2>
+    <input type="text" data-automation-id="legalNameSection_middleName" />
+    <input type="text" data-automation-id="addressSection_countryRegion" style="margin-top: 8px" />
+    <input type="text" data-automation-id="country-phone-code" style="margin-top: 8px" />
+
+    <h2>Date as a plain text field, non-US order</h2>
+    <label for="dob">Date of Birth</label>
+    <input type="text" id="dob" name="dob" placeholder="DD/MM/YYYY" />
+    <label for="dob2">Date of Birth (native picker)</label>
+    <input type="date" id="dob2" name="dob_native" />
+
+    <h2>Radio groups — the question lives on the legend</h2>
+    <fieldset>
+      <legend>Are you legally authorized to work in the country of this role?</legend>
+      <label><input type="radio" name="auth" value="Yes" /> Yes</label>
+      <label><input type="radio" name="auth" value="No" /> No</label>
+    </fieldset>
+    <fieldset>
+      <legend>Will you now or in the future require sponsorship for an employment visa?</legend>
+      <label><input type="radio" name="spon" value="Yes" /> Yes</label>
+      <label><input type="radio" name="spon" value="No" /> No</label>
+    </fieldset>
+    <fieldset>
+      <legend>Are you willing to relocate?</legend>
+      <!-- Deliberately awkward: "No" must not land on "Not sure". -->
+      <label><input type="radio" name="relo" value="yes" /> Yes</label>
+      <label><input type="radio" name="relo" value="no" /> No</label>
+      <label><input type="radio" name="relo" value="unsure" /> Not sure yet</label>
+    </fieldset>
+
+    <h2>Selects, including one whose wording won't match</h2>
+    <label for="country">Country</label>
+    <select id="country" name="country">
+      <option value="">Select…</option>
+      <option>India</option>
+      <option>Japan</option>
+      <option>United States</option>
+    </select>
+    <label for="notice">Notice Period</label>
+    <select id="notice" name="notice">
+      <option value="">Select…</option>
+      <option>Immediate</option>
+      <option>30 days</option>
+      <option>60 days</option>
+      <option>90 days</option>
+    </select>
+    <p class="note">
+      The notice select should be reported as needing attention: the profile says "2 months" and no option says that.
+    </p>
+
+    <h2>Pre-filled field — should be left alone unless Overwrite is on</h2>
+    <label for="pre">Current Company</label>
+    <input type="text" id="pre" name="org" value="Already typed by hand" />
+
+    <h2>Free-text questions</h2>
+    <label for="q1">Why do you want to work at Acme?</label>
+    <textarea id="q1" name="q1"></textarea>
+    <label for="q2">What is your notice period and earliest start date?</label>
+    <textarea id="q2" name="q2"></textarea>
+    <label for="q3">Describe the most challenging project you have worked on.</label>
+    <textarea id="q3" name="q3"></textarea>
+    <label for="q4">Which three of our internal engineering values resonate with you, and why?</label>
+    <textarea id="q4" name="q4"></textarea>
+    <p class="note">The last question should report as "No saved answer" — nothing generic should be pasted into it.</p>
+
+    <h2>Short text field — must not receive a long answer</h2>
+    <label for="short">Why this company? (max 60 characters)</label>
+    <input type="text" id="short" name="short" maxlength="60" />
+
+    <h2>File upload — extension cannot touch this</h2>
+    <label for="cv">Resume / CV</label>
+    <input type="file" id="cv" name="resume" />
+
+    <h2>Fields that must be ignored entirely</h2>
+    <label for="s">Search jobs</label><input type="text" id="s" name="q" />
+    <label for="ec">Emergency Contact Name</label><input type="text" id="ec" name="emergency_name" />
+    <label for="ref">Reference Name</label><input type="text" id="ref" name="ref_name" />
+  </body>
+</html>
