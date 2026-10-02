@@ -3,7 +3,7 @@
   "name": "Apply Autofill",
   "version": "0.1.0",
   "description": "Fill job application forms from a saved profile and a library of reusable answers. All data stays local.",
-  "permissions": ["storage", "activeTab"],
+  "permissions": ["storage", "activeTab", "scripting"],
   "action": {
     "default_popup": "src/popup.html",
     "default_title": "Apply Autofill"
@@ -13,7 +13,7 @@
     {
       "matches": ["http://*/*", "https://*/*", "file:///*"],
       "all_frames": true,
-      "js": ["src/store.js", "src/matcher.js", "src/filler.js", "src/content.js"],
+      "js": ["src/store.js", "src/matcher.js", "src/filler.js", "src/engine.js", "src/content.js"],
       "run_at": "document_idle"
     }
   ]
