@@ -2,6 +2,7 @@
    the reports that come back. */
 
 const $ = (id) => document.getElementById(id);
+const FIRST_WINDOW_MS = 500; // long enough for an already-live content script to answer
 const COLLECT_WINDOW_MS = 1200;
 
 let collected = [];
@@ -48,19 +49,44 @@ async function dispatch(type) {
   $('results').innerHTML = '';
 
   const opts = { overwrite: $('overwrite').checked, useSnippets: $('useSnippets').checked };
-  try {
-    // Fires into every frame. Frames with nothing to report stay silent, so the
-    // absence of a response is not an error.
-    await chrome.tabs.sendMessage(tab.id, { type, opts });
-  } catch {
-    // Content script not injected (page loaded before install, or a blocked origin).
+  const send = async () => {
+    try {
+      // Fires into every frame. Frames with nothing to report stay silent, so the
+      // absence of a response is not an error.
+      await chrome.tabs.sendMessage(tab.id, { type, opts });
+    } catch {
+      // No live listener: handled by the injection fallback below.
+    }
+  };
+
+  await send();
+  await wait(FIRST_WINDOW_MS);
+
+  // Silence usually means the page has no live content script — it was open before the
+  // extension was installed or reloaded. Inject and ask again rather than making the
+  // user reload the page.
+  if (!collected.length) {
+    $('status').textContent = 'Starting up on this page…';
+    if (await injectContentScripts(tab.id)) await send();
   }
 
-  setTimeout(() => {
-    collecting = false;
-    $('preview').disabled = $('fill').disabled = false;
-    render(type);
-  }, COLLECT_WINDOW_MS);
+  await wait(COLLECT_WINDOW_MS);
+  collecting = false;
+  $('preview').disabled = $('fill').disabled = false;
+  render(type);
+}
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+async function injectContentScripts(tabId) {
+  try {
+    const files = chrome.runtime.getManifest().content_scripts[0].js;
+    await chrome.scripting.executeScript({ target: { tabId, allFrames: true }, files });
+    return true;
+  } catch {
+    // Injection is blocked on chrome:// pages, the Web Store, and PDF viewers.
+    return false;
+  }
 }
 
 function render(type) {
@@ -70,7 +96,7 @@ function render(type) {
 
   if (!entries.length) {
     $('status').textContent =
-      'No form fields found. If the page was already open when you installed the extension, reload it and try again.';
+      'No fillable form fields found on this page. If the form is inside an embedded widget this extension cannot reach, open it in its own tab.';
     return;
   }
 
