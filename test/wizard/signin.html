@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Sign in to apply</title>
+    <link rel="stylesheet" href="wizard.css" />
+  </head>
+  <body>
+    <h1>Sign in to continue your application</h1>
+    <p class="note">
+      Entry point for testing the human handoff. The driver should detect the password field, pause, and wait for you to
+      sign in and reach step 1. Any email and password work.
+    </p>
+    <form action="step1.html" method="get">
+      <label for="u">Email</label>
+      <input type="email" id="u" name="u" />
+      <label for="p">Password</label>
+      <input type="password" id="p" name="p" />
+      <div class="actions"><button type="submit" class="primary">Sign in</button></div>
+    </form>
+  </body>
+</html>
