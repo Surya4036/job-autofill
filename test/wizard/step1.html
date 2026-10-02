@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Application — Step 1 of 4</title>
+    <link rel="stylesheet" href="wizard.css" />
+  </head>
+  <body>
+    <h1>Senior Backend Engineer — Application</h1>
+    <ol class="steps">
+      <li class="now">1. Your details</li>
+      <li>2. Address &amp; eligibility</li>
+      <li>3. Experience</li>
+      <li>4. Questions &amp; resume</li>
+    </ol>
+
+    <!-- Real navigation between steps, like Greenhouse and Taleo (not an SPA). -->
+    <form action="step2.html" method="get">
+      <label for="fn">First Name *</label>
+      <input type="text" id="fn" name="first_name" required />
+
+      <label for="mn">Middle Name</label>
+      <input type="text" id="mn" name="middle_name" />
+
+      <label for="ln">Last Name *</label>
+      <input type="text" id="ln" name="last_name" required />
+
+      <label for="em">Email Address *</label>
+      <input type="email" id="em" name="email" required />
+
+      <label for="em2">Confirm Email Address *</label>
+      <input type="email" id="em2" name="email_confirm" required />
+
+      <label for="ph">Mobile Number *</label>
+      <input type="tel" id="ph" name="phone" required />
+
+      <label for="li">LinkedIn Profile URL</label>
+      <input type="text" id="li" name="linkedin" />
+
+      <div class="actions">
+        <button type="submit" class="primary">Save and Continue</button>
+      </div>
+    </form>
+    <p class="note">Step 1 of 4. The driver should fill this, then click Save and Continue.</p>
+  </body>
+</html>
