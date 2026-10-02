@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Application — Step 3 of 4</title>
+    <link rel="stylesheet" href="wizard.css" />
+  </head>
+  <body>
+    <h1>Senior Backend Engineer — Application</h1>
+    <ol class="steps">
+      <li class="done">1. Your details</li>
+      <li class="done">2. Address &amp; eligibility</li>
+      <li class="now">3. Experience</li>
+      <li>4. Questions &amp; resume</li>
+    </ol>
+
+    <form action="step4.html" method="get">
+      <label for="co">Current Employer *</label>
+      <input type="text" id="co" name="employer" />
+
+      <label for="ti">Current Job Title *</label>
+      <input type="text" id="ti" name="title" />
+
+      <label for="yrs">Total Years of Relevant Experience *</label>
+      <input type="text" id="yrs" name="years" />
+
+      <label for="deg">Highest Qualification *</label>
+      <input type="text" id="deg" name="degree" />
+
+      <label for="fos">Field of Study *</label>
+      <input type="text" id="fos" name="major" />
+
+      <label for="uni">University / Institution *</label>
+      <input type="text" id="uni" name="university" />
+
+      <label for="gy">Year of Passing *</label>
+      <input type="text" id="gy" name="grad_year" />
+
+      <label for="cgpa">CGPA / Percentage</label>
+      <input type="text" id="cgpa" name="cgpa" />
+
+      <label for="notice">Notice Period *</label>
+      <select id="notice" name="notice">
+        <option value="">Select…</option>
+        <option>Immediate</option>
+        <option>15 days</option>
+        <option>30 days</option>
+        <option>60 days</option>
+        <option>90 days</option>
+      </select>
+
+      <label for="ctc">Expected CTC (in LPA) *</label>
+      <input type="text" id="ctc" name="expected_ctc" />
+
+      <label for="sd">Earliest Start Date</label>
+      <input type="date" id="sd" name="start_date" />
+
+      <div class="actions">
+        <button type="button" onclick="history.back()">Back</button>
+        <button type="submit" class="primary">Save and Continue</button>
+      </div>
+    </form>
+    <p class="note">Step 3 of 4. Notice period should resolve to 60 days; expected CTC is a text field.</p>
+  </body>
+</html>
