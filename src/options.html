@@ -159,6 +159,19 @@
       </fieldset>
 
       <fieldset>
+        <legend>Resume file</legend>
+        <p class="hint">
+          Stored in this browser only, like everything else here. The extension attaches it to resume upload fields
+          automatically. Some sites use custom uploaders that refuse a programmatic attachment — those get reported so
+          you can attach by hand.
+        </p>
+        <p id="resumeState">No resume saved.</p>
+        <button id="pickResume" type="button">Choose resume…</button>
+        <button id="removeResume" type="button" class="danger">Remove</button>
+        <input type="file" id="resumeFile" accept=".pdf,.doc,.docx,application/pdf" hidden />
+      </fieldset>
+
+      <fieldset>
         <legend>Behaviour</legend>
         <div class="grid">
           <label class="f"
