@@ -1,7 +1,7 @@
 /* Field classification: given a form control, decide which profile key (if any) it wants,
    and for long-form questions, which saved snippet answers it. Pure string work, no DOM writes. */
 
-const JA = (self.JA = self.JA || {});
+var JA = (self.JA = self.JA || {}); // var, not const: content scripts share one global scope
 
 /** Normalise an attribute or label into space-separated lowercase words.
  *  Splits camelCase first so Workday ids like `legalNameSection_firstName` become
